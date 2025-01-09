@@ -6,11 +6,17 @@ import axios from "axios";
 import logger from "./logger.js";
 import morgan from "morgan";
 import databaseConnection from "./database-config/databaseConfig.js"
+import userRoute from "./routes/user.route.js"
 const app=express();
 const morganFormat = ":method :url :status :response-time ms";
 app.use(express.json());
-app.use(bodyParser.json());
-app.use(cors("*"));
+// app.use(express.json())
+app.use(
+    cors({
+        origin: "*",
+        credentials: true,
+    })
+);
 app.use(
     morgan(morganFormat, {
       stream: {
@@ -27,6 +33,7 @@ app.use(
     })
   );
 databaseConnection()
+app.use("/api/user", userRoute);
 app.listen(process.env.PORT||8000,()=>{
     console.log(`Server listening on ${process.env.PORT}`);
     logger.info(`server listening on ${process.env.PORT}`);
