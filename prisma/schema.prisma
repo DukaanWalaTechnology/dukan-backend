@@ -24,8 +24,8 @@ model User {
   orders      Order[]
   reviews     Review[]
   shops       Shop[] 
-  otp         String
-  otpExpiredAt DateTime? @default(now())
+  // otp         String
+  // otpExpiredAt DateTime? @default(now())
 }
 
 
