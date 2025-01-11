@@ -66,6 +66,56 @@ curl --location 'http://localhost:8000/api/user/sign-in' \
     "password":"Abhyudaya@2002"
 }'
 ```
+For Registering shop(ShopKeeper Side)  user account.
+
+**Request Body:**
+```json
+{
+  "shopName": "The Tech Shop",
+  "address": "123 Tech Street, Silicon Valley",
+  "tradeName": "Tech Solutions",
+  "gstNumber": "GST123456789",
+  "panNumber": "PAN123456",
+  "foodLicense": "FL123456789",
+  "phone": "9876543210",
+  "userId":2
+}
+```
+
+**Response:**
+- **201 Created**
+  ```json
+  {
+    "success": "boolean",
+    "message":"string",
+    "data": "object"
+  }
+  ```
+- **400 Bad Request**
+  ```json
+  {
+    "error": "string"
+  }
+  ```
+
+**Example Request:**
+```bash
+curl --location 'http://localhost:8000/api/shopkeeper/shop/register' \
+--header 'Content-Type: application/json' \
+--header 'Cookie: token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFiaHl1ZGF5YWRldjEyM0BnbWFpbC5jb20iLCJpZCI6MSwibmFtZSI6IkFiaHl1ZGF5YSIsImlhdCI6MTczNjU3MjQ0MCwiZXhwIjoxNzM2NjA4NDQwfQ.nCqcgG3kOAPj_Itq1r6Y0ewkllZcEWxoKOYuH2oVzCM' \
+--data '{
+  "shopName": "The Tech Shop",
+  "address": "123 Tech Street, Silicon Valley",
+  "tradeName": "Tech Solutions",
+  "gstNumber": "GST123456789",
+  "panNumber": "PAN123456",
+  "foodLicense": "FL123456789",
+  "phone": "9876543210",
+  "userId":2
+}'
+```
+
+
 
 ---
 
