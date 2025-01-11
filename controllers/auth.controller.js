@@ -83,7 +83,8 @@ export const signIn=async(req,res)=>{
         const payload={
             email:checkUserExists.email,
             id:checkUserExists.id,
-            name:checkUserExists.name
+            name:checkUserExists.name,
+            role:checkUserExists.role,
         }
         // generate jwt token
         const token=jwt.sign(payload,process.env.JSON_WEB_TOKEN,{
