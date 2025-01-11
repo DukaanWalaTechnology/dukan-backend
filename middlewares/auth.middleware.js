@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
 import logger from '../logger.js';
 
-export const auth = (req, res, next) => {
+export const auth = async(req, res, next) => {
     console.log("Auth middleware");
     logger.info("Auth middleware entered");
     const token = req.cookies.token || req.body.token || req.headers.authorization?.split(" ")[1];
@@ -13,6 +13,7 @@ export const auth = (req, res, next) => {
     }
     try {
         const decodeToken = jwt.verify(token, process.env.JSON_WEB_TOKEN);
+        console.log(decodeToken, "decoded token");
         logger.info(`User token decoded for: ${decodeToken.email}`);
         req.user = decodeToken;
         next();
