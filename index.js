@@ -7,6 +7,8 @@ import logger from "./logger.js";
 import morgan from "morgan";
 import databaseConnection from "./database-config/databaseConfig.js"
 import userRoute from "./routes/user.route.js"
+import adminRoute from "./routes/admin.route.js"
+import shopKeeperRoute from "./routes/shopkeeper.route.js"
 const app=express();
 const morganFormat = ":method :url :status :response-time ms";
 app.use(express.json());
@@ -34,6 +36,9 @@ app.use(
   );
 databaseConnection()
 app.use("/api/user", userRoute);
+app.use("/api/admin", adminRoute);
+app.use("/api/shopkeeper", shopKeeperRoute);
+
 app.listen(process.env.PORT||8000,()=>{
     console.log(`Server listening on ${process.env.PORT}`);
     logger.info(`server listening on ${process.env.PORT}`);
