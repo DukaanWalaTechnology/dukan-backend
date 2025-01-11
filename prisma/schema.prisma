@@ -12,22 +12,24 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model User {
-  id          Int       @id @default(autoincrement())
-  email       String    @unique
-  password    String
-  role        Role
-  name        String?
-  phone       String?
-  address     String[]
-  createdAt   DateTime  @default(now())
-  orders      Order[]
-  reviews     Review[]
-  shops       Shop[] 
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  role      Role
+  name      String?
+  phone     String?
+  address   String[]
+  createdAt DateTime @default(now())
+  orders    Order[]
+  reviews   Review[]
+  shops     Shop[]
   // otp         String
   // otpExpiredAt DateTime? @default(now())
-}
 
+  ShopRequest ShopRequest[]
+}
 
 enum Role {
   USER
@@ -35,49 +37,53 @@ enum Role {
   ADMIN
   DELIVERY_AGENT
 }
+
 model Shop {
-  id          Int       @id @default(autoincrement())
-  name        String
-  ownerId     Int       @unique
-  owner       User      @relation(fields: [ownerId], references: [id])
-  address     String
-  tradeName   String
-  gstNumber   String
-  foodLicense String
-  phone       String
+  id           Int         @id @default(autoincrement())
+  shopName     String
+  ownerId      Int         @unique
+  owner        User        @relation(fields: [ownerId], references: [id])
+  address      String
+  tradeName    String
+  gstNumber    String
+  panNumber    String
+  foodLicense  String
+  phone        String
   profileImage String?
-  coverImage  String?
-  bankDetails String
-  isApproved  Boolean   @default(false)
-  inventory   Inventory[]
-  orders      Order[]
-  reviews     Review[]
+  coverImage   String?
+  bankDetails  String?
+  isApproved   Boolean     @default(false)
+  inventory    Inventory[]
+  orders       Order[]
+  reviews      Review[]
 }
+
 model Inventory {
-  id          Int       @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   shopId      Int
-  shop        Shop      @relation(fields: [shopId], references: [id])
+  shop        Shop     @relation(fields: [shopId], references: [id])
   name        String
   description String
   price       Float
   quality     String
   quantity    Int
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
+
 model Order {
-  id          Int        @id @default(autoincrement())
-  userId      Int
-  user       User       @relation(fields: [userId], references: [id])
-  shopId      Int
-  shop        Shop       @relation(fields: [shopId], references: [id])
+  id         Int         @id @default(autoincrement())
+  userId     Int
+  user       User        @relation(fields: [userId], references: [id])
+  shopId     Int
+  shop       Shop        @relation(fields: [shopId], references: [id])
   // deliveryId  Int?
   // delivery    User?      @relation(fields: [deliveryId], references: [id])
-  items       Json
-  status      OrderStatus
-  totalPrice  Float
-  placedAt    DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
+  items      Json
+  status     OrderStatus
+  totalPrice Float
+  placedAt   DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 }
 
 enum OrderStatus {
@@ -86,14 +92,37 @@ enum OrderStatus {
   OUT_FOR_DELIVERY
   DELIVERED
 }
+
 model Review {
-  id          Int       @id @default(autoincrement())
-  userId      Int
-  user        User      @relation(fields: [userId], references: [id])
-  shopId      Int
-  shop        Shop      @relation(fields: [shopId], references: [id])
-  rating      Int       @default(0)
-  comment     String?
-  createdAt   DateTime  @default(now())
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  shopId    Int
+  shop      Shop     @relation(fields: [shopId], references: [id])
+  rating    Int      @default(0)
+  comment   String?
+  createdAt DateTime @default(now())
 }
 
+model ShopRequest {
+  id          Int           @id @default(autoincrement())
+  shopName    String
+  address     String
+  tradeName   String
+  gstNumber   String
+  panNumber   String
+  foodLicense String
+  phone       String        @unique
+  status      RequestStatus @default(PENDING)
+  userId      Int // Add a userId field
+  user        User          @relation(fields: [userId], references: [id]) // Define the relation to User model
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
