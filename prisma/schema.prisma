@@ -27,6 +27,7 @@ model User {
   shops     Shop[]
   // otp         String
   // otpExpiredAt DateTime? @default(now())
+  isVerified Boolean @default(false)
 
   ShopRequest ShopRequest[]
 }
