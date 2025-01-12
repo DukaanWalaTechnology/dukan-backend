@@ -37,6 +37,12 @@ export const approveRequest=async(req,res)=>{
                 message: "Owner does not exist or is not a SHOP_OWNER",
               });
         }
+        if(owner.isVerified==false){
+            return res.status(400).json({
+                success: false,
+                message: "Owner is already verified",
+              });
+        }
         
         const shop=await prisma.shop.create({
             data:{
@@ -51,11 +57,15 @@ export const approveRequest=async(req,res)=>{
 
             }
         })
-        console.log("Shop Registered after raiseing request");
+        console.log("Shop Registered after raiseing request",shop);
         logger.info("Shop Registered after raiseing request");
         await prisma.shopRequest.update({
             where:{id: parseInt(requestId)},
             data:{status:"APPROVED"}
+        })
+        await prisma.user.update({
+            where:{id: owner.id},
+            data:{isVerified: true}
         })
         console.log("Shop status Updated");
         return res.status(200).json({
