@@ -116,7 +116,7 @@ model ShopRequest {
   phone       String        @unique
   status      RequestStatus @default(PENDING)
   userId      Int // Add a userId field
-  user        User          @relation(fields: [userId], references: [id]) // Define the relation to User model
+  user        User          @relation(fields: [userId], references: [id]) 
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
