@@ -24,6 +24,18 @@ export const approveRequest=async(req,res)=>{
                 message: 'Shop Request not found',
             });
         }
+        const isApproved=await prisma.shop.findUnique({
+            where:{
+                id:parseInt(requestId)
+            }
+        })
+        console.log(isApproved,"is shop already approved?")
+        if(isApproved){
+            return res.status(400).json({
+                success: false,
+                message: 'Shop already approved',
+            });
+        }
         const owner = await prisma.user.findUnique({
             where: {
               id: shopRequest.userId, 
@@ -37,10 +49,10 @@ export const approveRequest=async(req,res)=>{
                 message: "Owner does not exist or is not a SHOP_OWNER",
               });
         }
-        if(owner.isVerified==false){
+        if(owner.isVerified==true){
             return res.status(400).json({
                 success: false,
-                message: "Owner is already verified",
+                message: "shop already approved & Owner is already verified",
               });
         }
         
@@ -54,6 +66,7 @@ export const approveRequest=async(req,res)=>{
                 panNumber: shopRequest.panNumber,
                 gstNumber: shopRequest.gstNumber,
                 ownerId: owner.id, 
+                isApproved:true
 
             }
         })
