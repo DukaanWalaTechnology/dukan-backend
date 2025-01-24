@@ -9,9 +9,17 @@ import databaseConnection from "./database-config/databaseConfig.js"
 import userRoute from "./routes/user.route.js"
 import adminRoute from "./routes/admin.route.js"
 import shopKeeperRoute from "./routes/shopkeeper.route.js"
+import fileUpload from 'express-fileupload';
+import { cloudinaryConnect } from "./lib/cloudinaryConnect.js";
+
 const app=express();
 const morganFormat = ":method :url :status :response-time ms";
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(fileUpload({
+  useTempFiles: true,
+  tempFileDir: '/tmp/',  // or specify your own path
+}));
 // app.use(express.json())
 app.use(
     cors({
@@ -35,6 +43,7 @@ app.use(
     })
   );
 databaseConnection()
+cloudinaryConnect()
 app.use("/api/user", userRoute);
 app.use("/api/admin", adminRoute);
 app.use("/api/shopkeeper", shopKeeperRoute);

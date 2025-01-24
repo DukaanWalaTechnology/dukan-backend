@@ -25,11 +25,10 @@ model User {
   orders    Order[]
   reviews   Review[]
   shops     Shop[]
-  // otp         String
-  // otpExpiredAt DateTime? @default(now())
   isVerified Boolean @default(false)
 
   ShopRequest ShopRequest[]
+  interactions UserProduct[]
 }
 
 enum Role {
@@ -57,6 +56,8 @@ model Shop {
   inventory    Inventory[]
   orders       Order[]
   reviews      Review[]
+
+  Product Product[]
 }
 
 model Inventory {
@@ -78,9 +79,7 @@ model Order {
   user       User        @relation(fields: [userId], references: [id])
   shopId     Int
   shop       Shop        @relation(fields: [shopId], references: [id])
-  // deliveryId  Int?
-  // delivery    User?      @relation(fields: [deliveryId], references: [id])
-  items      Json
+  items      OrderItem[] // Many-to-many relationship with Product through OrderItem
   status     OrderStatus
   totalPrice Float
   placedAt   DateTime    @default(now())
@@ -92,6 +91,34 @@ enum OrderStatus {
   PREPARING
   OUT_FOR_DELIVERY
   DELIVERED
+}
+
+model OrderItem {
+  id         Int      @id @default(autoincrement())
+  orderId    Int
+  order      Order    @relation(fields: [orderId], references: [id])
+  productId  Int
+  product    Product  @relation(fields: [productId], references: [id])
+  quantity   Int
+  price      Float
+  createdAt  DateTime @default(now())
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  shopId      Int
+  shop        Shop     @relation(fields: [shopId], references: [id])
+  orderItems  OrderItem[] // Many-to-many relationship with Order through OrderItem
+  interactions UserProduct[]
+  name        String
+  description String
+  price       Float
+  discount    Int      @default(0)
+  imageUrl    String?
+  category    String?
+  stock       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Review {
@@ -115,7 +142,7 @@ model ShopRequest {
   foodLicense String
   phone       String        @unique
   status      RequestStatus @default(PENDING)
-  userId      Int // Add a userId field
+  userId      Int
   user        User          @relation(fields: [userId], references: [id]) 
 
   createdAt DateTime @default(now())
@@ -126,4 +153,14 @@ enum RequestStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+model UserProduct {
+  id            Int      @id @default(autoincrement())
+  userId        Int
+  user          User     @relation(fields: [userId], references: [id])
+  productId     Int
+  product       Product  @relation(fields: [productId], references: [id])
+  interactionType String // e.g., "wishlist", "viewed", "purchased"
+  createdAt     DateTime @default(now())
 }
