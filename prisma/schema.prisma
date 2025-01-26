@@ -132,11 +132,11 @@ model ShopRequest {
   foodLicense String
   phone       String        @unique
   status      RequestStatus @default(PENDING)
-  createdAt   DateTime      @default(now())
-
-  User User[]
+  userId      Int // Add a userId field
+  user        User          @relation(fields: [userId], references: [id]) // Define the relation to User model
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
-
 enum RequestStatus {
   PENDING
   APPROVED
