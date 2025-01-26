@@ -32,8 +32,13 @@ export const addProductToShop = async (req, res) => {
         imageUrl: uploadedImage?.secure_url,
       },
     });
+    console.log("newProduct added",newProduct);
+    if(newProduct){
+      return res.status(201).json({ success: true, message: "Product added successfully", product: newProduct });
+      
+    
+    }
 
-    res.status(201).json({ success: true, message: "Product added successfully", product: newProduct });
   } catch (error) {
     console.error("Error while adding product:", error);
     logger.error("Error adding product:", { message: error.message, stack: error.stack });
