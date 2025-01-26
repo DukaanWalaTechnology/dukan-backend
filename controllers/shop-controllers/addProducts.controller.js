@@ -1,6 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+
 import logger from "../../logger.js";
 import { uploadImageToCloudinary } from "../../lib/uploadImage.js";
+
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
