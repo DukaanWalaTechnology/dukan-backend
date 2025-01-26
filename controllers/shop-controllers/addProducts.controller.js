@@ -7,36 +7,20 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const addProductToShop = async (req, res) => {
-  
-    // Debugging Environment Variables (remove in production)
+  try {
     if (!process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
       throw new Error("Cloudinary API credentials are missing");
     }
 
-    console.log("Request Body:", req.body);
-    console.log("Request Files:", req.files);
-
     const { shopId, name, description, price, discount, category, stock } = req.body;
-    const image = req.files.image;
-    console.log("Image:", image);
+    const image = req.files?.image;
 
-    // Validation: Check if all required fields are present
-    if (!image) {
-      return res.status(400).json({ success: false, message: "Image file is required" });
-    }
-    if (!name || !description || !price || !stock) {
-      return res.status(400).json({ success: false, message: "Missing required fields: name, description, price, or stock" });
+    if (!image || !name || !description || !price || !stock) {
+      return res.status(400).json({ success: false, message: "Missing required fields" });
     }
 
-    console.log("Bale bale")
-    // Upload image to Cloudinary
     const uploadedImage = await uploadImageToCloudinary(image, process.env.CLOUDINARY_FOLDER_NAME);
-    console.log("Cloudinary Upload Result:", uploadedImage);
-
-    // Add product to the database
-    try{
     const newProduct = await prisma.product.create({
-      
       data: {
         shopId: parseInt(shopId),
         name,
@@ -49,19 +33,15 @@ export const addProductToShop = async (req, res) => {
       },
     });
 
-    return res.status(201).json({
-      success: true,
-      message: "Product added successfully",
-      product: newProduct,
-    });
+    res.status(201).json({ success: true, message: "Product added successfully", product: newProduct });
   } catch (error) {
-    console.log("error while adding product:", error);
-    logger.error("Error adding product:", error);
+    console.error("Error while adding product:", error);
+    logger.error("Error adding product:", { message: error.message, stack: error.stack });
 
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       message: "An error occurred while adding the product",
-      error: error,
     });
   }
 };
+
