@@ -99,7 +99,7 @@ model OrderItem {
 model Product {
   id          Int      @id @default(autoincrement())
   shopId      Int
-  shop        Shop     @relation(fields: [shopId], references: [id])
+  shop        Shop    @relation(fields: [shopId], references: [id])
   name        String
   description String
   price       Float

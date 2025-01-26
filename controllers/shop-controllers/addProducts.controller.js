@@ -19,20 +19,28 @@ export const addProductToShop = async (req, res) => {
       return res.status(400).json({ success: false, message: "Missing required fields" });
     }
     // console.log("updated")
+    // fetch shop id
+    const shopInfo=await prisma.shop.findUnique({
+      where: {
+        id: parseInt(shopId),
+      },
+    
+    })
+    console.log("shop info",shopInfo)
 
     const uploadedImage = await uploadImageToCloudinary(image, process.env.CLOUDINARY_FOLDER_NAME);
     const newProduct = await prisma.product.create({
       data: {
-        shopId: parseInt(shopId),
-        name,
-        description,
+        shop: { 
+          connect: { id: shopInfo.id } // Connect the shop using its ID
+        },
+        name: name,
+        description: description,
         price: parseFloat(price),
         discount: parseInt(discount) || 0,
         category: category || null,
         stock: parseInt(stock),
         imageUrl: uploadedImage?.secure_url,
-        interactions:null,
-        OrderItem:null
       },
     });
     console.log("newProduct added",newProduct);
