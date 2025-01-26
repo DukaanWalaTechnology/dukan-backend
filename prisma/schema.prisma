@@ -28,7 +28,7 @@ model User {
   isVerified Boolean @default(false)
 
   ShopRequest ShopRequest[]
-  interactions UserProduct[]
+  // interactions UserProduct[]
 }
 
 enum Role {
@@ -98,7 +98,7 @@ model OrderItem {
   orderId    Int
   order      Order    @relation(fields: [orderId], references: [id])
   productId  Int
-  product    Product  @relation(fields: [productId], references: [id])
+  // product    Product  @relation(fields: [productId], references: [id])
   quantity   Int
   price      Float
   createdAt  DateTime @default(now())
@@ -107,18 +107,15 @@ model OrderItem {
 model Product {
   id          Int      @id @default(autoincrement())
   shopId      Int
-  shop        Shop     @relation(fields: [shopId], references: [id])
-  orderItems  OrderItem[] // Many-to-many relationship with Order through OrderItem
-  interactions UserProduct[]
   name        String
   description String
   price       Float
-  discount    Int      @default(0)
-  imageUrl    String?
+  discount    Int?
   category    String?
   stock       Int
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  imageUrl    String
+
+  Shop        Shop     @relation(fields: [shopId], references: [id])
 }
 
 model Review {
@@ -155,12 +152,12 @@ enum RequestStatus {
   REJECTED
 }
 
-model UserProduct {
-  id            Int      @id @default(autoincrement())
-  userId        Int
-  user          User     @relation(fields: [userId], references: [id])
-  productId     Int
-  product       Product  @relation(fields: [productId], references: [id])
-  interactionType String // e.g., "wishlist", "viewed", "purchased"
-  createdAt     DateTime @default(now())
-}
+// model UserProduct {
+//   id            Int      @id @default(autoincrement())
+//   userId        Int
+//   user          User     @relation(fields: [userId], references: [id])
+//   productId     Int
+//   product       Product  @relation(fields: [productId], references: [id])
+//   interactionType String // e.g., "wishlist", "viewed", "purchased"
+//   createdAt     DateTime @default(now())
+// }

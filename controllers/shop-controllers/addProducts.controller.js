@@ -5,7 +5,7 @@ import { uploadImageToCloudinary } from "../../lib/uploadImage.js";
 const prisma = new PrismaClient();
 
 export const addProductToShop = async (req, res) => {
-  try {
+  
     // Debugging Environment Variables (remove in production)
     if (!process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
       throw new Error("Cloudinary API credentials are missing");
@@ -16,7 +16,7 @@ export const addProductToShop = async (req, res) => {
 
     const { shopId, name, description, price, discount, category, stock } = req.body;
     const image = req.files.image;
-  console.log("Image:", image);
+    console.log("Image:", image);
 
     // Validation: Check if all required fields are present
     if (!image) {
@@ -31,6 +31,7 @@ export const addProductToShop = async (req, res) => {
     console.log("Cloudinary Upload Result:", uploadedImage);
 
     // Add product to the database
+    try{
     const newProduct = await prisma.product.create({
       data: {
         shopId: parseInt(shopId),
@@ -40,7 +41,7 @@ export const addProductToShop = async (req, res) => {
         discount: parseInt(discount) || 0,
         category: category || null,
         stock: parseInt(stock),
-        imageUrl: uploadedImage.secure_url,
+        imageUrl: uploadedImage?.secure_url,
       },
     });
 
@@ -50,11 +51,13 @@ export const addProductToShop = async (req, res) => {
       product: newProduct,
     });
   } catch (error) {
+    console.log("error while adding product:", error);
     logger.error("Error adding product:", error);
+
     return res.status(500).json({
       success: false,
       message: "An error occurred while adding the product",
-      error: error.message,
+      error: error,
     });
   }
 };
