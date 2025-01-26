@@ -26,6 +26,7 @@ export const addProductToShop = async (req, res) => {
       return res.status(400).json({ success: false, message: "Missing required fields: name, description, price, or stock" });
     }
 
+    console.log("Bale bale")
     // Upload image to Cloudinary
     const uploadedImage = await uploadImageToCloudinary(image, process.env.CLOUDINARY_FOLDER_NAME);
     console.log("Cloudinary Upload Result:", uploadedImage);
@@ -33,6 +34,7 @@ export const addProductToShop = async (req, res) => {
     // Add product to the database
     try{
     const newProduct = await prisma.product.create({
+      
       data: {
         shopId: parseInt(shopId),
         name,
