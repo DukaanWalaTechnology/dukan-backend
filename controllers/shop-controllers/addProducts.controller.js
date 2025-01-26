@@ -18,6 +18,7 @@ export const addProductToShop = async (req, res) => {
     if (!image || !name || !description || !price || !stock) {
       return res.status(400).json({ success: false, message: "Missing required fields" });
     }
+    // console.log("updated")
 
     const uploadedImage = await uploadImageToCloudinary(image, process.env.CLOUDINARY_FOLDER_NAME);
     const newProduct = await prisma.product.create({
@@ -30,6 +31,8 @@ export const addProductToShop = async (req, res) => {
         category: category || null,
         stock: parseInt(stock),
         imageUrl: uploadedImage?.secure_url,
+        interactions:null,
+        OrderItem:null
       },
     });
     console.log("newProduct added",newProduct);
