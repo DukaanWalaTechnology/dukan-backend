@@ -41,6 +41,7 @@ model Shop {
   gstNumber    String
   foodLicense  String
   phone        String
+  panNumber   String
   profileImage String?
   coverImage   String?
   bankDetails  String?
