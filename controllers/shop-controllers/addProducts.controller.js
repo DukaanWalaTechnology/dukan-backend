@@ -62,3 +62,34 @@ export const addProductToShop = async (req, res) => {
   }
 };
 
+
+
+
+export const getAllProducts=async(req,res)=>{
+  try {
+    const { shopId } = req.params;
+    const products = await prisma.product.findMany({
+      where: {
+        shop: { id: parseInt(shopId) },
+      },
+    });
+    console.log("All products fetched",products);
+    logger.info("All products fetched",products);
+    if(products){
+      return res.status(200).json({ success: true, message: "Products fetched successfully", results: products });
+    }
+      
+      
+  } catch (error) {
+      console.log("Error while fetching product details",error);
+      logger.error("Error while fetching product details",error);
+      return res.status(500).json({
+          message:"Error while fetching product details",
+          success:false,
+          error:error
+
+
+      })
+      
+  }
+}
