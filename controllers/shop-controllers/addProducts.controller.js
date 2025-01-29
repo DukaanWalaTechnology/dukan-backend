@@ -69,7 +69,7 @@ export const getAllProducts=async(req,res)=>{
   try {
     const { shopId } = req.params;
     console.log(shopId,"shopid")
-    const products = await prisma.product.findUnique({
+    const products = await prisma.product.findMany({
       where: {
         shop: { id: parseInt(shopId) },
       },
