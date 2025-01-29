@@ -1,7 +1,6 @@
 
 import logger from "../../logger.js";
 import { uploadImageToCloudinary } from "../../lib/uploadImage.js";
-
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -29,6 +28,7 @@ export const addProductToShop = async (req, res) => {
     console.log("shop info",shopInfo)
 
     const uploadedImage = await uploadImageToCloudinary(image, process.env.CLOUDINARY_FOLDER_NAME);
+    console.log("Prisma Product Model:", prisma.product);
     const newProduct = await prisma.product.create({
       data: {
         shop: { 
@@ -68,7 +68,8 @@ export const addProductToShop = async (req, res) => {
 export const getAllProducts=async(req,res)=>{
   try {
     const { shopId } = req.params;
-    const products = await prisma.product.findMany({
+    console.log(shopId,"shopid")
+    const products = await prisma.product.findUnique({
       where: {
         shop: { id: parseInt(shopId) },
       },
