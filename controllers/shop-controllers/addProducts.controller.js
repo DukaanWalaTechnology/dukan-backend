@@ -2,6 +2,7 @@
 import logger from "../../logger.js";
 import { uploadImageToCloudinary } from "../../lib/uploadImage.js";
 import { PrismaClient } from "@prisma/client";
+import express from "express";
 
 const prisma = new PrismaClient();
 
@@ -92,5 +93,122 @@ export const getAllProducts=async(req,res)=>{
 
       })
       
+  }
+}
+
+
+export const updateProductInfo=async(req,res)=>{
+  const { name, description, price, discount, stock,shopId,productId } = req.body;
+  const image = req.files?.image;
+  try {
+    const checkShopExist=await prisma.shop.findUnique({
+      where:{
+        id:parseInt(shopId)
+      }
+    })
+    if(!checkShopExist){
+      return res.status(404).json({
+        success:false,
+        message:"Shop does not exist",
+      })
+    }
+    const checkProductExist=await prisma.product.findUnique({
+      where:{
+        id:parseInt(productId)
+      }
+    })
+    if(!checkProductExist){
+      return res.status(404).json({
+        success:false,
+        message:"Product does not exist",
+      })
+    }
+    const updatedImage=await uploadImageToCloudinary(image, process.env.CLOUDINARY_FOLDER_NAME);
+    const updatedProduct=await prisma.product.update({
+      where:{
+        id:parseInt(productId)
+      },
+      data:{
+        name,
+        description,
+        price:parseFloat(price),
+        discount:parseInt(discount),
+        stock:parseInt(stock),
+        imageUrl:updatedImage?.secure_url,
+      }
+    })
+    console.log("updated product",updatedProduct)
+    logger.info("updated product",updatedProduct)
+    return res.status(200).json({
+      success:true,
+      message:"Product updated successfully",
+      product:updatedProduct
+    })
+    
+  } catch (error) {
+    console.log("Error while updating product details",error);
+    logger.error("Error while updating product details",error);
+    return res.status(500).json({
+      message:"Error while updating product details",
+      success:false,
+      error:error
+    })
+    
+  }
+  
+
+}
+
+
+
+export const deleteProduct=async(req,res)=>{
+  const { shopId,productId } = req.body;
+  try {
+    const checkShopExist=await prisma.shop.findUnique({
+      where:{
+        id:parseInt(shopId)
+      }
+    })
+    if(!checkShopExist){
+      return res.status(404).json({
+        success:false,
+        message:"Shop does not exist",
+      })
+    }
+    const checkProductExist=await prisma.product.findUnique({
+      where:{
+        id:parseInt(productId)
+      }
+    })
+    if(!checkProductExist){
+      return res.status(404).json({
+        success:false,
+        message:"Product does not exist",
+      })
+    }
+    const deletedProduct=await prisma.product.delete({
+      where:{
+        id:parseInt(productId)
+      }
+    })
+    
+    console.log("deleted product",deletedProduct)
+    logger.info("deleted product",deletedProduct)
+    return res.status(200).json({
+      success:true,
+      message:"Product deleted successfully",
+      product:deletedProduct
+    })
+    
+  } catch (error) {
+    console.log("Error while deleting product details",error);
+    logger.error("Error while deleting product details",error);
+    return res.status(500).json({
+      message:"Error while deleting product details",
+      success:false,
+      error:error
+    })
+   
+    
   }
 }
