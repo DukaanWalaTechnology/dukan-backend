@@ -17,6 +17,7 @@ model User {
   address     String[]
   createdAt   DateTime       @default(now())
   isVerified  Boolean        @default(false)
+  isRequested  Boolean        @default(false)
   orders      Order[]
   reviews     Review[]
   shops       Shop[]

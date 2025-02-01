@@ -98,7 +98,7 @@ export const getAllProducts=async(req,res)=>{
 
 
 export const updateProductInfo=async(req,res)=>{
-  const { name, description, price, discount, stock,shopId,productId } = req.body;
+  const { name="", description="", price="", discount="", stock="",shopId,productId } = req.body;
   const image = req.files?.image;
   try {
     const checkShopExist=await prisma.shop.findUnique({
@@ -163,6 +163,7 @@ export const updateProductInfo=async(req,res)=>{
 
 export const deleteProduct=async(req,res)=>{
   const { shopId,productId } = req.body;
+  console.log(productId,shopId,">>>>")
   try {
     const checkShopExist=await prisma.shop.findUnique({
       where:{

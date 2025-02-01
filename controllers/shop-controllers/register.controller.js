@@ -41,11 +41,16 @@ export const registerShop =async(req,res)=>{
             }
         })
         console.log('Shop registration request raised',raiseRequestForRegistration);
+        const updateRequestForRegistration=await prisma.user.update({
+            where:{id: parseInt(userId)},
+            data:{isRequested: true}
+        })
         return res.status(200).json({
             succes:true,
             message: 'Shop registration request raised successfully',
             data:raiseRequestForRegistration
         })
+
 
         
     } catch (error) {

@@ -32,7 +32,7 @@ export const createUser = async (req, res) => {
             data: { name, email, role, password: hashedPassword },
         });
 
-        console.log('User created');
+        console.log('User created',newUser);
         logger.info('User created', newUser);
         return res.json({
             success: true,
@@ -115,3 +115,26 @@ export const signIn=async(req,res)=>{
         
     }
 }
+
+export const logoutUser = async (req, res) => {
+    try {
+      res.clearCookie("token");
+      console.log("user logged out")
+      logger.info("User logged out");  // Logged out activity should be logged here too.  For demonstration, I've left it commented out.  You may uncomment it as per your requirement.  Note: This will not log out the user from the database, only from the server-side session.  If you want to log out from the database as well, you would need to add logic to delete the user's session in your database as well.  For simplicity,
+      
+      return res.status(200).json({
+        success: true,
+        message: "Logged out successfully",
+      });
+  
+    } catch (error) {
+      console.log("Error during logout", error);
+      logger.error("Error during logout", error);
+      return res.status(500).json({
+        success: false,
+        message: "Error during logout",
+        error: error.message,
+      });
+    }
+  };
+  
