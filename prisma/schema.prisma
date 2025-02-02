@@ -18,6 +18,8 @@ model User {
   createdAt   DateTime       @default(now())
   isVerified  Boolean        @default(false)
   isRequested  Boolean        @default(false)
+  verifyCode    String?       // Nullable, since it is generated only during verification
+  verifyCodeExpiry DateTime? 
   orders      Order[]
   reviews     Review[]
   shops       Shop[]

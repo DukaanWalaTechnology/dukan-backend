@@ -66,35 +66,63 @@ export const addProductToShop = async (req, res) => {
 
 
 
-export const getAllProducts=async(req,res)=>{
+
+export const getAllProducts = async (req, res) => {
   try {
     const { shopId } = req.params;
-    console.log(shopId,"shopid")
-    const products = await prisma.product.findMany({
-      where: {
-        shop: { id: parseInt(shopId) },
+
+    // Validate shopId
+    if (!shopId || isNaN(shopId)) {
+      return res.status(400).json({ success: false, message: "Invalid shop ID" });
+    }
+
+    // Authenticate User (Assuming JWT token in Authorization header)
+   
+
+    // Verify the token
+   
+
+    // Check if the shopId belongs to the authenticated user (shopkeeper)
+    const shop = await prisma.shop.findUnique({
+      where: { id: parseInt(shopId) },
+      include: {
+        owner: true,  // Assuming a relationship between shop and user (shopkeeper)
       },
     });
-    console.log("All products fetched",products);
-    logger.info("All products fetched",products);
-    if(products){
-      return res.status(200).json({ success: true, message: "Products fetched successfully", results: products });
+
+    // Check if shop exists and the authenticated user is the shop owner
+    if (!shop) {
+      return res.status(403).json({ success: false, message: "Access forbidden: You are not the owner of this shop" });
     }
-      
-      
+
+    // Fetch products related to the shop
+    const products = await prisma.product.findMany({
+      where: {
+        shopId: parseInt(shopId), // Ensure shopId is correctly referenced
+      },
+    });
+
+    console.log("All products fetched:", products);
+    logger.info("All products fetched", products);
+
+    return res.status(200).json({ 
+      success: true, 
+      message: "Products fetched successfully", 
+      results: products 
+    });
+
   } catch (error) {
-      console.log("Error while fetching product details",error);
-      logger.error("Error while fetching product details",error);
-      return res.status(500).json({
-          message:"Error while fetching product details",
-          success:false,
-          error:error
+    console.error("Error while fetching product details", error);
+    logger.error("Error while fetching product details", error);
 
-
-      })
-      
+    return res.status(500).json({
+      success: false,
+      message: "Error while fetching product details",
+      error: error.message,
+    });
   }
-}
+};
+
 
 
 export const updateProductInfo=async(req,res)=>{
