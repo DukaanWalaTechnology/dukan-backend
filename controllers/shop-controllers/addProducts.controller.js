@@ -85,9 +85,9 @@ export const getAllProducts = async (req, res) => {
     // Check if the shopId belongs to the authenticated user (shopkeeper)
     const shop = await prisma.shop.findUnique({
       where: { id: parseInt(shopId) },
-      include: {
-        owner: true,  // Assuming a relationship between shop and user (shopkeeper)
-      },
+      // include: {
+      //   owner: true,  // Assuming a relationship between shop and user (shopkeeper)
+      // },
     });
 
     // Check if shop exists and the authenticated user is the shop owner
