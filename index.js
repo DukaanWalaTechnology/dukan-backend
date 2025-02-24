@@ -11,7 +11,7 @@ import adminRoute from "./routes/admin.route.js"
 import shopKeeperRoute from "./routes/shopkeeper.route.js"
 import fileUpload from 'express-fileupload';
 import { cloudinaryConnect } from "./lib/cloudinaryConnect.js";
-
+import { getLatLong } from "./lib/getLatLong.js";
 const app=express();
 const morganFormat = ":method :url :status :response-time ms";
 app.use(express.json());
@@ -44,6 +44,8 @@ app.use(
   );
 databaseConnection()
 cloudinaryConnect()
+// getLatLong("Shipra Suncity", "201014").then(console.log);
+
 app.use("/api/user", userRoute);
 app.use("/api/admin", adminRoute);
 app.use("/api/shopkeeper", shopKeeperRoute);

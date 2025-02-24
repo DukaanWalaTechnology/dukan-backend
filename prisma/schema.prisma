@@ -8,19 +8,19 @@ datasource db {
 }
 
 model User {
-  id          Int           @id @default(autoincrement())
-  email       String        @unique
-  password    String
-  role        Role
-  name        String?
-  phone       String?
-  address     String[]
-  createdAt   DateTime       @default(now())
-  isVerified  Boolean        @default(false)
-  isRequested  Boolean        @default(false)
-  orders      Order[]
-  reviews     Review[]
-  shops       Shop[]
+  id           Int           @id @default(autoincrement())
+  email        String        @unique
+  password     String
+  role         Role
+  name         String?
+  phone        String?
+  address      String[]
+  createdAt    DateTime      @default(now())
+  isVerified   Boolean       @default(false)
+  isRequested  Boolean       @default(false)
+  orders       Order[]
+  reviews      Review[]
+  shops        Shop[]
   shopRequests ShopRequest[]
   interactions UserProduct[]
 }
@@ -38,11 +38,14 @@ model Shop {
   ownerId      Int         @unique
   owner        User        @relation(fields: [ownerId], references: [id])
   address      String
+  lat          Float?      // ✅ Added latitude
+  lon          Float?     // ✅ Added longitude
   tradeName    String
+  pinCode      Int?
   gstNumber    String
   foodLicense  String
   phone        String
-  panNumber   String
+  panNumber    String
   profileImage String?
   coverImage   String?
   bankDetails  String?
@@ -72,7 +75,7 @@ model Order {
   user        User        @relation(fields: [userId], references: [id])
   shopId      Int
   shop        Shop        @relation(fields: [shopId], references: [id])
-  items       OrderItem[] // Many-to-many relationship with Product through OrderItem
+  items       OrderItem[]
   status      OrderStatus
   totalPrice  Float
   placedAt    DateTime    @default(now())
@@ -128,17 +131,21 @@ model ShopRequest {
   id          Int           @id @default(autoincrement())
   shopName    String
   address     String
+  lat         Float?        // ✅ Optional lat (for location lookup)
+  lon         Float?        // ✅ Optional lon (for location lookup)
   tradeName   String
+  pinCode     Int?
   gstNumber   String
   panNumber   String
   foodLicense String
   phone       String        @unique
   status      RequestStatus @default(PENDING)
-  userId      Int // Add a userId field
-  user        User          @relation(fields: [userId], references: [id]) // Define the relation to User model
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  userId      Int
+  user        User          @relation(fields: [userId], references: [id])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
 }
+
 enum RequestStatus {
   PENDING
   APPROVED
@@ -151,6 +158,6 @@ model UserProduct {
   user          User     @relation(fields: [userId], references: [id])
   productId     Int
   product       Product  @relation(fields: [productId], references: [id])
-  interactionType String // e.g., "wishlist", "viewed", "purchased"
+  interactionType String 
   createdAt     DateTime @default(now())
 }

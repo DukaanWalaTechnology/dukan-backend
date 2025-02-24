@@ -3,6 +3,7 @@ import logger from "../../logger.js"
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken"
 import { request } from 'express';
+import { getLatLong } from '../../lib/getLatLong.js';
 const prisma = new PrismaClient();
 
 
@@ -55,6 +56,13 @@ export const approveRequest=async(req,res)=>{
                 message: "shop already approved & Owner is already verified",
               });
         }
+        // 
+        console.log(shopRequest.address,shopRequest.pinCode,"shopRequest.address,shopRequest.pinCode")
+        const location = await getLatLong(shopRequest.address,shopRequest.pinCode);
+        console.log("Location info",location)
+        if (!location) {
+           logger.info("No location found for this shop")
+        }
         
         const shop=await prisma.shop.create({
             data:{
@@ -66,7 +74,9 @@ export const approveRequest=async(req,res)=>{
                 panNumber: shopRequest.panNumber,
                 gstNumber: shopRequest.gstNumber,
                 ownerId: owner.id, 
-                isApproved:true
+                isApproved:true,
+                lat: location.lat, // ✅ Save latitude
+                lon: location.lon
 
             }
         })

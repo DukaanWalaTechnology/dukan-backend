@@ -28,7 +28,7 @@ export const fetchProductsForUser=async(req,res)=>{
     return res.status(200).json({
         success: true,
         message: 'Products fetched successfully',
-        results: fetchProducts,
+        data: fetchProducts,
     })
 
         

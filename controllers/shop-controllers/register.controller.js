@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken"
 const prisma = new PrismaClient();
 
 export const registerShop =async(req,res)=>{
-    const{shopName,address,tradeName,gstNumber,panNumber,foodLicense,phone,userId}=req.body;
+    const{shopName,address,tradeName,gstNumber,panNumber,foodLicense,phone,userId,pinCode}=req.body;
 
     try {
         if(!shopName||!address||!tradeName||!foodLicense||!phone||!gstNumber||!panNumber||!userId){
@@ -36,7 +36,8 @@ export const registerShop =async(req,res)=>{
                 phone,
                 panNumber,
                 gstNumber,
-                userId
+                userId,
+                pinCode
                
             }
         })
