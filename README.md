@@ -1,4 +1,4 @@
-# AUTH API Documentation
+# AUTH API Documentatio
 
 ## Overview
 This documentation outlines the endpoints and usage of the AUTH API. This API is designed to handle user authentication and management operations.
